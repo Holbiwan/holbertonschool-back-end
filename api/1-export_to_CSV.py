@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """Uses a REST API for a given employee ID, returns
-information  about TODO list progress and exports in CSV"""
+information about TODO list progress and exports in CSV"""
 
 import csv
 import requests
@@ -34,8 +34,6 @@ if __name__ == "__main__":
     with open(f"{EMPLOYEE_ID}.csv", "w", newline="") as file:
         writer = csv.writer(file, quoting=csv.QUOTE_NONNUMERIC)
         for task in data:
-            writer.writerow(
-                [EMPLOYEE_ID, username, str(task["completed"]), task["title"]]
-            )
+            writer.writerow([EMPLOYEE_ID, username, task["completed"], task["title"]])
 
     print(f"CSV file '{EMPLOYEE_ID}.csv' has been successfully created.")
