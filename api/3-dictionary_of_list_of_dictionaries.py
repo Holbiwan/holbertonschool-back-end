@@ -1,22 +1,40 @@
 #!/usr/bin/python3
 """Uses a REST API for a given employee ID, returns
-information about TODO list progress and exports in jSON"""
+information about TODO list progress and exports in JSON"""
 
 import json
 import requests
 import sys
 
-if __name__ == "__main__":
-    URL = "https://jsonplaceholder.typicode.com"
+BASE_URL = "https://jsonplaceholder.typicode.com"
 
-    users = requests.get(f"{URL}/users").json()
-    dic_user = {}
-    for user in users:
-        tasks = requests.get(f"{URL}/users/{user['id']}/todos").json()
-        dic_user[user["id"]] = []
-        for task in tasks:
-            dic_task = {"task": task["title"], "completed": task["completed"],
-                        "username": user["username"]}
-            dic_user[user["id"]].append(dic_task)
-    with open("todo_all_employees.json", "w") as file:
-        json.dump(dic_user, file)
+def get_user_todos(user_id):
+    """Get TODOs for a specific user."""
+    try:
+        response = requests.get(f"{BASE_URL}/users/{user_id}/todos")
+        response.raise_for_status()  # Raise HTTPError for bad responses
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching TODOs for user {user_id}: {e}")
+        return []
+
+if __name__ == "__main__":
+    try:
+        users = requests.get(f"{BASE_URL}/users").json()
+        dic_user = {}
+
+        for user in users:
+            tasks = get_user_todos(user['id'])
+            dic_user[user["id"]] = []
+
+            for task in tasks:
+                dic_task = {"task": task["title"], "completed": task["completed"],
+                            "username": user["username"]}
+                dic_user[user["id"]].append(dic_task)
+
+        with open("todo_all_employees.json", "w") as file:
+            json.dump(dic_user, file, indent=2)
+    
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching users: {e}")
+        sys.exit(1)
