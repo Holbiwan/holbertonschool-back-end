@@ -1,6 +1,8 @@
 #!/usr/bin/python3
-"""Uses a REST API for a given employee ID, returns
-information about TODO list progress and exports in JSON"""
+"""
+Uses a REST API for a given employee ID, returns
+information about TODO list progress and exports in JSON
+"""
 
 import json
 import requests
@@ -28,8 +30,11 @@ if __name__ == "__main__":
             dic_user[user["id"]] = []
 
             for task in tasks:
-                dic_task = {"task": task["title"], "completed": task["completed"],
-                            "username": user["username"]}
+                dic_task = {
+                    "task": task["title"],
+                    "completed": task["completed"],
+                    "username": user["username"]
+                }
                 dic_user[user["id"]].append(dic_task)
 
         with open("todo_all_employees.json", "w") as file:
