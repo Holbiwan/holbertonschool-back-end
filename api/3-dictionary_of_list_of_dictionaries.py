@@ -10,6 +10,7 @@ import sys
 
 BASE_URL = "https://jsonplaceholder.typicode.com"
 
+
 def get_user_todos(user_id):
     """Get TODOs for a specific user."""
     try:
@@ -20,9 +21,13 @@ def get_user_todos(user_id):
         print(f"Error fetching TODOs for user {user_id}: {e}")
         return []
 
-if __name__ == "__main__":
+
+def main():
     try:
-        users = requests.get(f"{BASE_URL}/users").json()
+        users_response = requests.get(f"{BASE_URL}/users")
+        users_response.raise_for_status()
+        users = users_response.json()
+
         dic_user = {}
 
         for user in users:
@@ -39,7 +44,11 @@ if __name__ == "__main__":
 
         with open("todo_all_employees.json", "w") as file:
             json.dump(dic_user, file, indent=2)
-    
+
     except requests.exceptions.RequestException as e:
-        print(f"Error fetching users: {e}")
+        print(f"Error fetching data: {e}")
         sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()
