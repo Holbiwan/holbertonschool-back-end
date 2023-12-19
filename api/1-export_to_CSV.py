@@ -3,6 +3,7 @@
 information about TODO list progress and exports in CSV"""
 
 import csv
+import os
 import requests
 import sys
 
